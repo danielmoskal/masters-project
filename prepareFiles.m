@@ -1,4 +1,4 @@
-function [sequencesFile, lstmFile, finalNetFile, lstmFullFile, labelsMap, incorectLabelsMap, listing] = prepareFiles()
+function [sequencesFile, lstmFile, finalNetFile, lstmFullFile, labelsMap, incorrectLabelsMap, listing] = prepareFiles()
 
 dataFolder = "D:\Dane do pracy dyplomowej\sigexp";
 sequencesFile = fullfile(dataFolder,"DATA\sigexp_sequences.mat");
@@ -14,9 +14,9 @@ imagesLength = numel(fullListing);
 
 labelsMap = prepareLabels(labelsFileName);
 if (isfile(incorrectLabelsFileName))
-    incorectLabelsMap = prepareLabels(incorrectLabelsFileName);
+    incorrectLabelsMap = prepareLabels(incorrectLabelsFileName);
 else
-    incorectLabelsMap = containers.Map;
+    incorrectLabelsMap = containers.Map;
 end
 
 

@@ -1,22 +1,50 @@
-function [sequencesTrain, labelsTrain, sequencesValidation, labelsValidation] = prepareTrainingData(sequences, labels)
+function [sequencesTrain, labelsTrain, sequencesValidation, labelsValidation] = prepareTrainingData(sequences, labels, incorectLabelsMap, onlyCorrectValidationSequence)
 
 maxAllowedLength = 300;
 
-numObservations = numel(sequences);
-idx = randperm(numObservations);
-N = floor(0.9 * numObservations);
+if incorectLabelsMap.Count > 0 && onlyCorrectValidationSequence
+    
+    labelCells = cellstr(string(labels));
+    incorrectLogicalArray = isKey(incorectLabelsMap, labelCells);
 
-idxTrain = idx(1:N);
-sequencesTrain = sequences(idxTrain);
-labelsTrain = labels(idxTrain);
+    incorrectSequences = sequences(incorrectLogicalArray);
+    incorrectLabels = labels(incorrectLogicalArray);
 
-idxValidation = idx(N+1:end);
-sequencesValidation = sequences(idxValidation);
-labelsValidation = labels(idxValidation);
+    correctSequences = sequences(~incorrectLogicalArray);
+    correctLabels = labels(~incorrectLogicalArray);
+    
+    correctObservationsLength = numel(correctSequences);
+    idx = randperm(correctObservationsLength);
+    N = floor(0.9 * correctObservationsLength);
 
+    idxValidation = idx(N+1:end);
+    sequencesValidation = correctSequences(idxValidation);
+    labelsValidation = correctLabels(idxValidation);
 
-numObservationsTrain = numel(sequencesTrain);
-sequenceLengths = zeros(1,numObservationsTrain);
+    idxTrain = idx(1:N);
+    sequencesTrain = [correctSequences(idxTrain); incorrectSequences];
+    labelsTrain = [correctLabels(idxTrain); incorrectLabels];
+
+    numObservationsTrain = numel(sequencesTrain);
+    idxTrain = randperm(numObservationsTrain);
+    sequencesTrain = sequencesTrain(idxTrain);
+    labelsTrain = labelsTrain(idxTrain);
+else
+    numObservations = numel(sequences);
+    idx = randperm(numObservations);
+    N = floor(0.9 * numObservations);
+
+    idxTrain = idx(1:N);
+    sequencesTrain = sequences(idxTrain);
+    labelsTrain = labels(idxTrain);
+
+    idxValidation = idx(N+1:end);
+    sequencesValidation = sequences(idxValidation);
+    labelsValidation = labels(idxValidation);
+    numObservationsTrain = numel(sequencesTrain);
+end
+
+sequenceLengths = zeros(1, numObservationsTrain);
 
 for i = 1:numObservationsTrain
     sequence = sequencesTrain{i};
