@@ -1,0 +1,20 @@
+1. Długie prace nad przygotowaniem sekwencji z obrazów (nauczonej na sieci konwolucyjnej) - wiele prób, porpawek itp, w koncu sie udalo
+
+2. Przxeprowadzenie prostych testow nauki sieci neuronowej
+(opisane w mailu do promotora, 4 testy, wszysktie w granicach 95-100% poprawnosci)
+
+3. Zauwazenie problemu klas "niepoprawny...." - generlanie te drobne pomyłki sieci są tylko dla tych klas gestow
+3.1 Z racji, że "niepoprawny_dziekowac", nie zawsze musi reprezentować to samo znaczenie "niepoprawnosci", dlatego wpadlem na pomysl, zeby nie walidować sieci na tych wartościach "nieporawny..", a wykorzystywac je tylko do nauki, czyli będą jako osobne wyjscia sieci, ale nie będzie takich przykladow w danych walidacyjnych (10% zbioru) - wymyslic jak to zrobic i sprawdzic wyniki
+
+4. Zauwazylem, że przygotowywanie sekwencji z pkt1, zajmowalo bardzo duzo czasu i pamieci - wtedy myslalem ze tak musi byc.
+4.1 Dla wszystkich danych (test4), utworzenie sekwencji cech zajelo okolo 4 godziny
+4.2 Domyslnie "zeros" dla gestu zwraca macierz "4D double", ale wystarczy przecież "4D uint8", bo operujemy na danych kolorow "0-255" dla pojedynczego piksela.. (teoretycznie 8 razy mniej wymaganej pamieci) - 30 min (czyli 8 razy mniej)
+4.3 Sprawdzmy ile dla "uint8" bedzie sie przygotowywac ta sama sekwencja?
+4.4 dla "double" bardzo dlugo zajmowało przeliczanie sekwencji na dysku (gdy braklo RAMU, system wykonywał obliczenia na pamieci w dysku, gdzie czas dostepu jest nieporownywalnie dluzszy, a system przez ten czas sie "wieszal")
+4.5. 4 godziny + ogromne ilosci zuzycia pamieci vs 30 min + maksymalnie 1GB zuzywanej pamieci RAM dla (uint8)
+4.6. natomaist wygenerowana i zapisana na dysku sekwencja cech (po sieci konwolucyjnej) jest dokladnie taka sama (roizmiar ten sam co do bajta)
+4.7. Dlaczego az tyle pamieci? rozmair macierzy dla sekwencji gestu to 1920x1080x3x~250(MaxLength) * (8 bajtow double) lub (1 bajt uint8)
+
+5. Instalacja nowego matlab 2019a -> 2020a (zobaczymy czy cos przyspieszy z nauka moze? :D)
+
+6. Test nr 5 - na wszystkich dostepnych gestach(8) bez "niepoprawnych" - osiagamy szybciej i czesciej 100%
