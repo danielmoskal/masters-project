@@ -1,0 +1,2 @@
+- dane z "test 7"
+- po 10 ppowtorzen dla testu

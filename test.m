@@ -1,12 +1,22 @@
 clear
+% 
+dataFolder = 'D:\Dane do pracy dyplomowej\sigexp\DATA';
+paramsFile = fullfile(dataFolder, 'params.csv');
+% load(lstmFull);
 
-[sequencesFile, lstmFile, finalNetFile, lstmFullFile, labelsMap, incorrectLabelsMap, listing] = prepareFiles();
+% tableListing = struct2table(listing);
+% writetable(tableListing, 'tableListing.xlsx');
+% writetable(tableListing, 'tableListing.csv');
+
+% results = struct('folder', fullListing(1).folder, 'name', fullListing(1).name);
+% listing(end+1) = struct('folder', fullListing(imgIdx).folder, 'name', fullListing(imgIdx).name);
 
 netCNN = googlenet;
 inputSize = netCNN.Layers(1).InputSize(1:2);
-load(finalNetFile, 'net', 'classes', 'info');
 
-[gesture] = prepareGesture(listing, 'PersonB', 'kiedy_gotowy_dowod10002', inputSize);
-displayGesture(gesture);
-classes
-[YPred,scores] = classify(net,{gesture})
+[fileNames, constParams, variableParams, allParams] = train.prepareParams(paramsFile);
+[labelsMap] = common.prepareLabels(fileNames.labelsCsvFile);
+load(fileNames.finalNetMatFile, 'net', 'classes', 'info');
+%load(fileNames.classifyResultsMatFile);
+
+train.testClassifyIfRequired(allParams, labelsMap, net, classes, inputSize, 'test1_');
