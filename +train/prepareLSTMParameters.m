@@ -1,4 +1,4 @@
-function [layersMatrix, optionsMatrix, numIterationsPerEpoch] = prepareLSTMParameters(sequencesTrain, labelsTrain, sequencesValidation, labelsValidation, params)
+function [layersMatrix, optionsMatrix] = prepareLSTMParameters(sequencesTrain, labelsTrain, sequencesValidation, labelsValidation, params)
 
 numFeatures = size(sequencesTrain{1},1);
 classes = categories(labelsTrain);

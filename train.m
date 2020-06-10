@@ -8,7 +8,7 @@ inputSize = netCNN.Layers(1).InputSize(1:2);
 
 [labels, sequences] = train.prepareSequences(netCNN, labelsMap, listing, fileNames.sequencesMatFile);
 [sequencesTrain, labelsTrain, sequencesValidation, labelsValidation] = train.prepareTrainingData(sequences, labels, incorrectLabelsMap, constParams);
-[layers, options, numIterationsPerEpoch] = train.prepareLSTMParameters(sequencesTrain, labelsTrain, sequencesValidation, labelsValidation, allParams);
+[layers, options] = train.prepareLSTMParameters(sequencesTrain, labelsTrain, sequencesValidation, labelsValidation, allParams);
 
 classes = categories(labelsTrain);
 numTests = size(variableParams, 2);
@@ -47,6 +47,7 @@ for i = constParams.startTestIdx:numTests
         fprintf("Repeat time(HH:MM:SS): %s, elapsed time: %s, time stamp: %s\n", repeatTimetring, elapsedTimeString, timeStampString);
     end
     
+    numIterationsPerEpoch = options(:, i).ValidationFrequency;
     [repeatResultsTab] = train.calculateResults(infos, classifyResults, repeatTimeResults, numIterationsPerEpoch);
     
     testStop = now;
