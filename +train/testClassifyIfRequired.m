@@ -6,9 +6,10 @@ function [classifyResult] = testClassifyIfRequired(params, labelsMap, net, class
     
     fullClassifyStart = now;
     fileNames = params.fileNames;
+    constParams = params.const;
 
-    [listing] = common.prepareListing(fileNames.testDataFileListing, labelsMap);
-    [labels, gestures, gesturesListing] = common.prepareGestures(labelsMap, listing, inputSize, fileNames.gesturesMatFile);
+    [listing] = common.prepareListing(fileNames.dataFileListing, labelsMap, constParams.crossValidationPerson);
+    [labels, gestures, gesturesListing] = common.prepareGestures(labelsMap, listing, inputSize, fileNames.crossValidationGesturesMatFile);
     
     numGestures = size(gestures, 1);
     numClasses = size(classes, 1);

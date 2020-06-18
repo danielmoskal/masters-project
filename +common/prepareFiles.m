@@ -1,5 +1,8 @@
-function [labelsMap, incorrectLabelsMap, listing] = prepareFiles(fileNames)
+function [labelsMap, incorrectLabelsMap, trainListing, validationListing] = prepareFiles(params)
 
+    fileNames = params.fileNames;
+    constParams = params.const;
+    
     labelsMap = common.prepareLabels(fileNames.labelsCsvFile);
     if (isfile(fileNames.incorrectLabelsCsvFile))
         incorrectLabelsMap = prepareLabels(fileNames.incorrectLabelsCsvFile);
@@ -7,5 +10,6 @@ function [labelsMap, incorrectLabelsMap, listing] = prepareFiles(fileNames)
         incorrectLabelsMap = containers.Map;
     end
 
-    [listing] = common.prepareListing(fileNames.trainDataFileListing, labelsMap);
+    [trainListing] = common.prepareListing(fileNames.dataFileListing, labelsMap, constParams.trainPerson);
+    [validationListing] = common.prepareListing(fileNames.dataFileListing, labelsMap, constParams.validationPerson);
 end

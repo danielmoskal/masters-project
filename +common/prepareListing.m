@@ -1,13 +1,19 @@
-function [listing] = prepareListing(dataFilelisting, labelsMap)
+function [listing] = prepareListing(dataFilelisting, labelsMap, personStringArray)
 
     fullListing = dir(dataFilelisting);
     numFiles = numel(fullListing);
-    listing = struct('folder', fullListing(1).folder, 'name', fullListing(1).name);
 
-    for fileIdx = 2:numFiles
+    for fileIdx = 1:numFiles
+        [~, person] = fileparts(fileparts(fileparts(fullListing(fileIdx).folder)));
+        person = string(person);
         [~, label] = fileparts(fullListing(fileIdx).folder);
-        if isKey(labelsMap, label)
-            listing(end+1) = struct('folder', fullListing(fileIdx).folder, 'name', fullListing(fileIdx).name);
+        
+        if any(strcmp(personStringArray, person)) && isKey(labelsMap, label)
+            if ~exist('listing', 'var')
+                listing = struct('folder', fullListing(fileIdx).folder, 'name', fullListing(fileIdx).name);
+            else
+                listing(end+1) = struct('folder', fullListing(fileIdx).folder, 'name', fullListing(fileIdx).name);
+            end
         end
     end
 

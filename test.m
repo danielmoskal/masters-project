@@ -2,8 +2,8 @@ clear
 % 
 dataFolder = 'D:\Dane do pracy dyplomowej\sigexp\DATA';
 paramsFile = fullfile(dataFolder, 'params.csv');
-testFile = fullfile(dataFolder, 'sigexp_LSTM_full.mat');
-load(testFile);
+% testFile = fullfile(dataFolder, 'sigexp_LSTM_full.mat');
+% load(testFile);
 
 % tableListing = struct2table(listing);
 % writetable(tableListing, 'tableListing.xlsx');
@@ -21,3 +21,7 @@ load(testFile);
 % %load(fileNames.classifyResultsMatFile);
 % 
 % train.testClassifyIfRequired(allParams, labelsMap, net, classes, inputSize, 'test1_');
+
+[fileNames, constParams, variableParams, allParams] = train.prepareParams(paramsFile);
+% labelsMap = common.prepareLabels(fileNames.labelsCsvFile);
+% [listing] = common.prepareListing(fileNames.trainDataFileListing, labelsMap, ["PersonA", "PersonB"]);
