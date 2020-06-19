@@ -4,12 +4,8 @@ fullTrainStart = now;
 netCNN = googlenet;
 inputSize = netCNN.Layers(1).InputSize(1:2);
 [fileNames, constParams, variableParams, allParams] = train.prepareParams(paramsFile);
-[labelsMap, ~, trainListing, validationListing] = common.prepareFiles(allParams);
 
-[trainSequences, trainLabels, validationSequences, validationlabels] = train.prepareSequences(netCNN, labelsMap, trainListing, validationListing, allParams);
-[layers, optionsCells] = train.prepareLSTMParameters(trainSequences, trainLabels, validationSequences, validationlabels, allParams);
 
-classes = categories(trainLabels);
 numTests = size(variableParams, 2);
 numRepeats = constParams.numRepeats;
 
@@ -19,6 +15,12 @@ numRepeats = constParams.numRepeats;
 for i = constParams.startTestIdx:numTests
     testStart = now;
 
+    [labelsMap, ~, trainListing, validationListing] = common.prepareFiles(i, allParams);
+    [trainSequences, trainLabels, validationSequences, validationlabels] = train.prepareSequences(netCNN, labelsMap, trainListing, validationListing, allParams, i);
+    [layers, optionsCells] = train.prepareLSTMParameters(trainSequences, trainLabels, validationSequences, validationlabels, allParams);
+    classes = categories(trainLabels);
+    
+    
     [infos] = train.initLstmInfosStruct(1, numRepeats);
     classifyResults = zeros(numRepeats, 1);
     repeatTimeResults = zeros(numRepeats);
@@ -30,8 +32,7 @@ for i = constParams.startTestIdx:numTests
         [netLSTM, info] = trainNetwork(trainSequences, trainLabels, layers(:, i), optionsCells{i});
         [net] = train.assembleNetsIfRequired(netCNN, netLSTM, constParams);
         
-        classifyFileNamePrefix = sprintf("test-%d_repeat-%d_", i, j);
-        [classifyResult] = train.testClassifyIfRequired(allParams, labelsMap, net, classes, inputSize, classifyFileNamePrefix);
+        [classifyResult] = train.testClassifyIfRequired(allParams, labelsMap, net, classes, inputSize, i, j);
             
         repeatStop = now;
         [repeatTime, repeatTimetring] = common.calculateTimeResult(repeatStart, repeatStop);

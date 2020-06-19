@@ -1,4 +1,4 @@
-function [classifyResult] = testClassifyIfRequired(params, labelsMap, net, classes, inputSize, fileNamePrefix)
+function [classifyResult] = testClassifyIfRequired(params, labelsMap, net, classes, inputSize, testId, repeatId)
 
     if ~params.const.performTestClassification || ~params.const.assembleNetworks
         return; 
@@ -6,10 +6,13 @@ function [classifyResult] = testClassifyIfRequired(params, labelsMap, net, class
     
     fullClassifyStart = now;
     fileNames = params.fileNames;
-    constParams = params.const;
+    variableParams = params.variable;
 
-    [listing] = common.prepareListing(fileNames.dataFileListing, labelsMap, constParams.crossValidationPerson);
-    [labels, gestures, gesturesListing] = common.prepareGestures(labelsMap, listing, inputSize, fileNames.crossValidationGesturesMatFile);
+    [listing] = common.prepareListing(fileNames.dataFileListing, labelsMap, variableParams(testId).losoPerson);
+    
+    filePrefix = sprintf("person-%s_", variableParams(testId).losoPersonShortString);
+    gestureMatFile = fullfile(fileNames.sequencesFolder, filePrefix + fileNames.crossValidationGesturesMatFileName);
+    [labels, gestures, gesturesListing] = common.prepareGestures(labelsMap, listing, inputSize, gestureMatFile);
     
     numGestures = size(gestures, 1);
     numClasses = size(classes, 1);
@@ -60,6 +63,7 @@ function [classifyResult] = testClassifyIfRequired(params, labelsMap, net, class
         mergedCellValues = [labelsCell, YPreds, emptyCell, scores, emptyCell, classifyResultsCell, fullClassifyTimes, fullClassifyTimeStrings, gesturesListing];
         classifyResultsTable = cell2table(mergedCellValues, 'VariableNames', mergedCellKeys);
 
+        fileNamePrefix = sprintf("test-%d_repeat-%d_", testId, repeatId);
         xlsxFile = fullfile(fileNames.classifyResultsFolder, fileNamePrefix + fileNames.classifyResultsXlsxFileName);
         csvFile = fullfile(fileNames.classifyResultsFolder, fileNamePrefix + fileNames.classifyResultsCsvFileName);
         matFile = fullfile(fileNames.classifyResultsFolder, fileNamePrefix + fileNames.classifyResultsMatFileName);

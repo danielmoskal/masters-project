@@ -10,6 +10,9 @@ function [results] = prepareTestResults(params, results, repeatResultsTab, index
     results(index).maxAllowedSequenceLength = constParams.maxAllowedSequenceLength;
     results(index).numRepeats = constParams.numRepeats;
     
+    results(index).trainPerson = variableParams(index).trainPersonShortString;
+    results(index).validPerson = variableParams(index).validPersonShortString;
+    results(index).losoValidPerson = variableParams(index).losoPersonShortString;
     results(index).bilstmOutputMode = variableParams(index).bilstmOutputMode;
     results(index).initialLearnRate = variableParams(index).initialLearnRate;
     results(index).learnRateDropPeriod = variableParams(index).learnRateDropPeriod;
@@ -53,9 +56,6 @@ function [results] = prepareTestResults(params, results, repeatResultsTab, index
     
     results(index).fullTestElapsedTime = fullTestTime;
     results(index).fullTestElapsedTime_HH_MM_SS = fullTestTimeString;
-    results(index).trainPerson = join(constParams.trainPerson, ",");
-    results(index).validationPerson = join(constParams.validationPerson, ",");
-    results(index).crossValidationPerson = join(constParams.crossValidationPerson, ",");
     results(index).validAccuracyPatience = constParams.validAccuracyPatience;
     results(index).maxExpectedValidAccuracy = constParams.maxExpectedValidAccuracy;
     results(index).minExpectedValidLoss = constParams.minExpectedValidLoss;

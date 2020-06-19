@@ -16,12 +16,14 @@ for i = 1:paramsLength
     switch key
         case 'dataFileListing' 
             dataFileListing = correctValues;
-        case 'trainSequencesMatFile' 
-            trainSequencesMatFile = correctValues;
-        case 'validationSequencesMatFile' 
-            validationSequencesMatFile = correctValues;
-        case 'crossValidationGesturesMatFile' 
-            crossValidationGesturesMatFile = correctValues;
+        case 'sequencesFolder' 
+            sequencesFolder = correctValues;
+        case 'trainSequencesMatFileName' 
+            trainSequencesMatFileName = correctValues;
+        case 'validationSequencesMatFileName' 
+            validationSequencesMatFileName = correctValues;
+        case 'crossValidationGesturesMatFileName' 
+            crossValidationGesturesMatFileName = correctValues;
         case 'saveNetsFolder' 
             saveNetsFolder = correctValues;
         case 'lstmMatFileName' 
@@ -78,6 +80,10 @@ for i = 1:paramsLength
             numRepeats = correctValues;
         case 'startTestIdx'
             startTestIdx = correctValues;
+        case 'autoLosoTrain'
+            autoLosoTrain = correctValues;
+        case 'autoLosoTrainAllPerson'
+            autoLosoTrainAllPerson = correctValues;
         case 'trainPerson'
             trainPerson = correctValues;
         case 'validationPerson'
@@ -123,27 +129,13 @@ for i = 1:paramsLength
     end
 end
 
-numSequencePaddingDirections = size(sequencePaddingDirections, 2);
-numBilstmOutputModes = size(bilstmOutputModes, 2);
-numInitialLearnRates = size(initialLearnRates, 2);
-numLearnRateDropPeriods = size(learnRateDropPeriods, 2);
-numLearnRateDropFactors = size(learnRateDropFactors, 2);
-numGradientThresholds = size(gradientThresholds, 2);
-numShuffles = size(shuffles, 2);
-numValidationPatiences =  size(validationPatiences, 2);
-numMaxEpochs = size(maxEpochs, 2);
-numMiniBatchSizes = size(miniBatchSizes, 2);
-numSolvers = size(solvers, 2);
-numHiddenUnits = size(hiddenUnits, 2);
-numDropouts = size(dropouts, 2);
-
-numTests = numSequencePaddingDirections * numBilstmOutputModes * numInitialLearnRates * numLearnRateDropPeriods * numLearnRateDropFactors * numGradientThresholds * numShuffles * numValidationPatiences * numMaxEpochs * numMiniBatchSizes * numSolvers * numHiddenUnits * numDropouts;
 
 fileNames = struct(...
     'dataFileListing', dataFileListing, ...
-    'trainSequencesMatFile', trainSequencesMatFile, ...
-    'validationSequencesMatFile', validationSequencesMatFile, ...
-    'crossValidationGesturesMatFile', crossValidationGesturesMatFile, ...
+    'sequencesFolder', sequencesFolder, ...
+    'trainSequencesMatFileName', trainSequencesMatFileName, ...
+    'validationSequencesMatFileName', validationSequencesMatFileName, ...
+    'crossValidationGesturesMatFileName', crossValidationGesturesMatFileName, ...
     'saveNetsFolder', saveNetsFolder, ...
     'lstmMatFileName', lstmMatFileName, ...
     'lstmFullMatFileName', lstmFullMatFileName, ...
@@ -174,6 +166,8 @@ constParams = struct(...
     'saveClassifyResults', saveClassifyResults, ...
     'numRepeats', numRepeats, ...
     'startTestIdx', startTestIdx, ...
+    'autoLosoTrain', autoLosoTrain, ...
+    'autoLosoTrainAllPerson', autoLosoTrainAllPerson, ...
     'trainPerson', trainPerson, ...
     'validationPerson', validationPerson, ...
     'crossValidationPerson', crossValidationPerson, ...
@@ -181,7 +175,33 @@ constParams = struct(...
     'maxExpectedValidAccuracy', maxExpectedValidAccuracy, ...
     'minExpectedValidLoss', minExpectedValidLoss);
 
+
+[personDataSets] = preparePersonDataSets(autoLosoTrainAllPerson, constParams);
+
+numPersonDataSets = size(personDataSets, 2);
+numSequencePaddingDirections = size(sequencePaddingDirections, 2);
+numBilstmOutputModes = size(bilstmOutputModes, 2);
+numInitialLearnRates = size(initialLearnRates, 2);
+numLearnRateDropPeriods = size(learnRateDropPeriods, 2);
+numLearnRateDropFactors = size(learnRateDropFactors, 2);
+numGradientThresholds = size(gradientThresholds, 2);
+numShuffles = size(shuffles, 2);
+numValidationPatiences =  size(validationPatiences, 2);
+numMaxEpochs = size(maxEpochs, 2);
+numMiniBatchSizes = size(miniBatchSizes, 2);
+numSolvers = size(solvers, 2);
+numHiddenUnits = size(hiddenUnits, 2);
+numDropouts = size(dropouts, 2);
+
+numTests = numPersonDataSets * numSequencePaddingDirections * numBilstmOutputModes * numInitialLearnRates * numLearnRateDropPeriods * numLearnRateDropFactors * numGradientThresholds * numShuffles * numValidationPatiences * numMaxEpochs * numMiniBatchSizes * numSolvers * numHiddenUnits * numDropouts;
+
 variableParams = struct(...
+    'trainPerson', cell(1, numTests), ...
+    'trainPersonShortString', cell(1, numTests), ...
+    'validPerson', cell(1, numTests), ...
+    'validPersonShortString', cell(1, numTests), ...
+    'losoPerson', cell(1, numTests), ...
+    'losoPersonShortString', cell(1, numTests), ...
     'sequencePaddingDirection', cell(1, numTests), ...
     'bilstmOutputMode', cell(1, numTests), ...
     'initialLearnRate', cell(1, numTests), ...
@@ -201,8 +221,9 @@ allParams = struct(...
     'const', constParams, ...
     'variable', variableParams);
 
-bilstmOutputModesIdx = 1;
+personDataSetsIdx = 1;
 sequencePaddingDirectionIdx = 1;
+bilstmOutputModesIdx = 1;
 initialLearnRatesIdx = 1;
 learnRateDropPeriodIdx = 1;
 learnRateDropFactorIdx = 1;
@@ -216,6 +237,13 @@ hiddenUnitsIdx = 1;
 dropoutsIdx = 1;
 
 for i = 1:numTests    
+    variableParams(i).trainPerson = personDataSets(personDataSetsIdx).trainPerson;
+    variableParams(i).trainPersonShortString = personDataSets(personDataSetsIdx).trainPersonShortString;
+    variableParams(i).validPerson = personDataSets(personDataSetsIdx).validPerson;
+    variableParams(i).validPersonShortString = personDataSets(personDataSetsIdx).validPersonShortString;
+    variableParams(i).losoPerson = personDataSets(personDataSetsIdx).losoPerson;
+    variableParams(i).losoPersonShortString = personDataSets(personDataSetsIdx).losoPersonShortString;
+    
     variableParams(i).sequencePaddingDirection = sequencePaddingDirections(sequencePaddingDirectionIdx);
     variableParams(i).bilstmOutputMode = bilstmOutputModes(bilstmOutputModesIdx);
     variableParams(i).initialLearnRate = initialLearnRates(initialLearnRatesIdx);
@@ -231,6 +259,7 @@ for i = 1:numTests
     variableParams(i).dropout = dropouts(dropoutsIdx);
     allParams.variable = variableParams;
 
+    personDataSetsIdx = updateIndex('personDataSet', personDataSetsIdx, numPersonDataSets);
     sequencePaddingDirectionIdx = updateIndex('sequencePaddingDirection', sequencePaddingDirectionIdx, numSequencePaddingDirections);
     bilstmOutputModesIdx = updateIndex('bilstmOutputModes', bilstmOutputModesIdx, numBilstmOutputModes);
     initialLearnRatesIdx = updateIndex('initialLearnRate', initialLearnRatesIdx, numInitialLearnRates);
@@ -262,6 +291,8 @@ end
 
 function [multiMod] = prepareMultiMod(paramName)
     switch paramName
+        case 'personDataSet'
+            multiMod = numSequencePaddingDirections * prepareMultiMod('sequencePaddingDirection');
         case 'sequencePaddingDirection'
             multiMod = numBilstmOutputModes * prepareMultiMod('bilstmOutputModes');
         case 'bilstmOutputModes'
@@ -292,4 +323,67 @@ function [multiMod] = prepareMultiMod(paramName)
     end
 end
 
+end
+
+function [personDataSets] = preparePersonDataSets(autoLosoTrainAllPerson, constParams)
+
+    if ~constParams.autoLosoTrain
+        
+        [personDataSets] = initPersonDataSets(1);
+        
+        trainPersonDataSet = constParams.trainPerson;
+        validPersonDataSet = constParams.validationPerson;
+        losoValidPersonDataSet = constParams.crossValidationPerson;
+        
+        [personDataSets] = setPersonDataSet(1, personDataSets);
+        return;
+    end
+    
+    
+    numAllPeople = size(autoLosoTrainAllPerson, 2);
+    if numAllPeople < 3
+       fprintf("Not enough test person data, min 3 test person required!\n");
+       error("Not enough test person data, min 3 test person required!");
+    end
+    
+    validPersonDataSet = autoLosoTrainAllPerson(end);
+    autoLosoTrainAllPerson(end) = [];
+    
+    numPeopleToLosoTrain = size(autoLosoTrainAllPerson, 2);
+    [personDataSets] = initPersonDataSets(numPeopleToLosoTrain);
+    
+    for i = 1 : numPeopleToLosoTrain
+        selector = zeros(1, numPeopleToLosoTrain, 'uint8');
+        selector(i) = 1;
+        logicalSelector = boolean(selector);
+        
+        losoValidPersonDataSet = autoLosoTrainAllPerson(logicalSelector);
+        trainPersonDataSet = autoLosoTrainAllPerson(~logicalSelector);
+        [personDataSets] = setPersonDataSet(i, personDataSets);
+    end
+    
+    function [personDataSets] = setPersonDataSet(index, personDataSets)
+        personDataSets(index).trainPerson = trainPersonDataSet;
+        personDataSets(index).validPerson = validPersonDataSet;
+        personDataSets(index).losoPerson = losoValidPersonDataSet;
+        
+        tranPersonCharArray = char(trainPersonDataSet);
+        validPersonCharArray = char(validPersonDataSet);
+        losoPersonCharArray = char(losoValidPersonDataSet);
+        
+        personDataSets(index).trainPersonShortString = join(string(tranPersonCharArray(:, end,:)), ",");
+        personDataSets(index).validPersonShortString = join(string(validPersonCharArray(:, end,:)), ",");
+        personDataSets(index).losoPersonShortString = join(string(losoPersonCharArray(:, end,:)), ",");
+    end
+
+end
+
+function [personDataSets] = initPersonDataSets(numPeopleToTran)
+    personDataSets = struct(...
+    'trainPerson', cell(1, numPeopleToTran), ...
+    'trainPersonShortString', cell(1, numPeopleToTran), ...
+    'validPerson', cell(1, numPeopleToTran), ...
+    'validPersonShortString', cell(1, numPeopleToTran), ...
+    'losoPerson', cell(1, numPeopleToTran), ...
+    'losoPersonShortString', cell(1, numPeopleToTran));
 end
