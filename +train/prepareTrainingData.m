@@ -1,6 +1,6 @@
-function [sequencesTrain, labelsTrain, sequencesValidation, labelsValidation] = prepareTrainingData(sequences, labels, incorectLabelsMap, constParams)
+function [sequencesTrain, labelsTrain, sequencesValidation, labelsValidation] = prepareTrainingData(sequences, labels, constParams, incorectLabelsMap)
 
-if nargin > 2 && incorectLabelsMap.Count > 0 && constParams.onlyCorrectValidationSequence
+if nargin > 3 && incorectLabelsMap.Count > 0 && constParams.onlyCorrectValidationSequence
     
     labelCells = cellstr(string(labels));
     incorrectLogicalArray = isKey(incorectLabelsMap, labelCells);

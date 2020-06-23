@@ -67,7 +67,9 @@ fprintf("--Training finished with time(HH:MM:SS): %s, time stamp: %s--\n", fullT
 
 function [] = saveNetworksIfRequired(info)
     
-    expectedResultAchieved = info.FinalValidationLoss <= constParams.minExpectedValidLoss || info.FinalValidationAccuracy >= constParams.maxExpectedValidAccuracy;
+    expectedResultAchieved = constParams.maxMinExpectedEnabled && ...
+        (info.FinalValidationLoss <= constParams.minExpectedValidLoss || info.FinalValidationAccuracy >= constParams.maxExpectedValidAccuracy);
+    
     if (expectedResultAchieved)
         filePrefix = sprintf("test-%d_repeat-%d_", i, j);
     else

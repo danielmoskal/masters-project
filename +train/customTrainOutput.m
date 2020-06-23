@@ -1,6 +1,6 @@
 function stop = customTrainOutput(info, constParams)
 
-    if info.State == "done"
+    if ~constParams.maxMinExpectedEnabled || info.State == "done"
         return;
     end
     
