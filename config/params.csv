@@ -1,0 +1,69 @@
+//FILES
+dataFileListingTemplate,"D:\Dane do pracy dyplomowej\sigexp\*\*\*\"
+rgbFileNameTemplate,"*.jpeg"
+depthMapFileNameTemplate,"depth*.png"
+sequencesFolder,"D:\Dane do pracy dyplomowej\sigexp\DATA\sequences"
+trainSequencesMatFileName,"sigexp_train_sequences.mat"
+validationSequencesMatFileName,"sigexp_validation_sequences.mat"
+crossValidationGesturesMatFileName,"sigexp_cross_validation_gestures.mat"
+saveNetsFolder,"D:\Dane do pracy dyplomowej\sigexp\DATA"
+lstmMatFileName,"sigexp_LSTM.mat"
+lstmFullMatFileName,"sigexp_LSTM_full.mat"
+finalNetMatFileName,"sigexp_final_net.mat"
+labelsCsvFile,"D:\Dane do pracy dyplomowej\sigexp\DATA\labels.csv"
+incorrectLabelsCsvFile,"D:\Dane do pracy dyplomowej\sigexp\DATA\incorrect_labels.csv"
+
+trainResultsXlsxFile,"D:\Dane do pracy dyplomowej\sigexp\DATA\train_results.xlsx"
+trainResultsCsvFile,"D:\Dane do pracy dyplomowej\sigexp\DATA\train_results.csv"
+trainResultsMatFile,"D:\Dane do pracy dyplomowej\sigexp\DATA\train_results.mat"
+classifyResultsFolder,"D:\Dane do pracy dyplomowej\sigexp\DATA\classify-results"
+classifyResultsXlsxFileName,"classify_results.xlsx"
+classifyResultsCsvFileName,"classify_results.csv"
+classifyResultsMatFileName,"classify_results.mat"
+
+//CONST PARAMS
+//plot,none
+plot,training-progress
+//learnRateSchedule,none
+learnRateSchedule,piecewise
+displaySequencesHistogram,0
+onlyCorrectValidationSequence,1
+maxAllowedSequenceLength,300
+assembleNetworks,1
+displayFinalNetworkGraph,0
+performTestClassification,1
+saveLSTMNetwork,0
+saveLSTMFullData,0
+saveFinalNetwork,0
+saveTrainResults,1
+saveClassifyResults,1
+
+validAccuracyPatience,120
+maxMinExpectedEnabled,0
+maxExpectedValidAccuracy,95
+minExpectedValidLoss,0.20
+
+trainPerson,PersonC,PersonD,PersonF,PersonG,PersonH,PersonI,PersonJ
+validationPerson,PersonA
+crossValidationPerson,PersonB
+
+trainOnDepthMaps,0
+autoLosoTrain,1
+numRepeats,1
+startTestIdx,1
+
+//VARIABLE PARAMS
+autoLosoTrainAllPerson,PersonA,PersonC,PersonD,PersonF,PersonI,PersonJ,PersonB
+sequencePaddingDirections,left
+bilstmOutputModes,last
+initialLearnRates,1e-4
+learnRateDropPeriods,8
+learnRateDropFactors,1
+gradientThresholds,2
+shuffles,every-epoch
+validationPatiences,120
+maxEpochs,120
+miniBatchSizes,1
+solvers,rmsprop
+hiddenUnits,800
+dropouts,0.3
