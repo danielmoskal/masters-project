@@ -1,3 +1,3 @@
 clear
-paramsFile = "D:\Dane do pracy dyplomowej\sigexp\DATA\params.csv";
+paramsFile = "config\params.csv";
 train(paramsFile);
