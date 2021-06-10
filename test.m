@@ -1,13 +1,13 @@
 clear
 % 
-dataFolder = 'D:\Dane do pracy dyplomowej\sigexp\DATA\test';
+dataFolder = 'D:\Dane do pracy dyplomowej\sigexp\DATA';
 paramsFile = fullfile(dataFolder, 'params.csv');
-testFile = fullfile(dataFolder, 'sigexp_LSTM_full.mat');
-labelsCsvFile = fullfile(dataFolder, 'labels.csv');
-testGesturesFile = fullfile(dataFolder, 'test_gesture.mat');
-testSequence = fullfile(dataFolder, 'sequences\person-A,B_sigexp_train_sequences.mat');
+testFile = fullfile(dataFolder, '\sequences\depth_person-A,D,F,I,J_sigexp_train_sequences.mat');
+% labelsCsvFile = fullfile(dataFolder, 'labels.csv');
+% testGesturesFile = fullfile(dataFolder, 'test_gesture.mat');
+% testSequence = fullfile(dataFolder, 'sequences\person-A,B_sigexp_train_sequences.mat');
 
-%load(testFile);
+load(testFile);
 
 %train(paramsFile);
 
@@ -28,7 +28,8 @@ testSequence = fullfile(dataFolder, 'sequences\person-A,B_sigexp_train_sequences
 % 
 % train.testClassifyIfRequired(allParams, labelsMap, net, classes, inputSize, 'test1_');
 
-[fileNames, constParams, variableParams, allParams] = train.prepareParams(paramsFile);
+%[fileNames, constParams, variableParams, allParams] = train.prepareParams(paramsFile);
+%[labelsMap, ~, trainListing, validationListing] = common.prepareFiles(1, allParams);
 % labelsMap = common.prepareLabels(fileNames.labelsCsvFile);
 % [listing] = common.prepareListing(fileNames.dataFileListing, labelsMap, ["PersonA", "PersonB"]);
 

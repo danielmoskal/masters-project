@@ -8,8 +8,11 @@ function [trainSequences, trainLabels, validationSequences, validationlabels] = 
     fprintf("- Prepare train sequences... (person-%s)\n", variableParams(testId).trainPersonShortString);
     
     filePrefix = sprintf("person-%s_", variableParams(testId).trainPersonShortString);
+    if constParams.trainOnDepthMaps
+        filePrefix = sprintf("depth_%s", filePrefix);
+    end
     trainSeuqienceMatFile = fullfile(fileNames.sequencesFolder, filePrefix + fileNames.trainSequencesMatFileName);
-    [trainLabels, trainSequences] = train.prepareSequence(netCNN, labelsMap, trainListing, trainSeuqienceMatFile);
+    [trainLabels, trainSequences] = train.prepareSequence(netCNN, labelsMap, trainListing, trainSeuqienceMatFile, constParams.trainOnDepthMaps);
     
     fprintf("- Train sequences prepared!\n");
 
@@ -17,8 +20,11 @@ function [trainSequences, trainLabels, validationSequences, validationlabels] = 
     fprintf("- Prepare validation sequences... (person-%s)\n", variableParams(testId).validPersonShortString);
     
     filePrefix = sprintf("person-%s_", variableParams(testId).validPersonShortString);
+    if constParams.trainOnDepthMaps
+        filePrefix = sprintf("depth_%s", filePrefix);
+    end
     validSeuqienceMatFile = fullfile(fileNames.sequencesFolder, filePrefix + fileNames.validationSequencesMatFileName);
-    [validationlabels, validationSequences] = train.prepareSequence(netCNN, labelsMap, validationListing, validSeuqienceMatFile);
+    [validationlabels, validationSequences] = train.prepareSequence(netCNN, labelsMap, validationListing, validSeuqienceMatFile, constParams.trainOnDepthMaps);
     
     fprintf("- Validation sequences prepared!\n");
 

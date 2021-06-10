@@ -1,4 +1,4 @@
-function [labels, sequences] = prepareSequence(netCNN, labelsMap, listing, sequencesFile)
+function [labels, sequences] = prepareSequence(netCNN, labelsMap, listing, sequencesFile, trainOnDepthMaps)
 
 inputSize = netCNN.Layers(1).InputSize(1:2);
 layerName = "pool5-7x7_s1";
@@ -16,7 +16,7 @@ start = now;
 sequences = cell(sequencesLength, 1);
 labels = cell(sequencesLength, 1);
 
-gesture = zeros(H, W, C, maxSequenceLength,'uint8');
+gesture = zeros(H, W, C, maxSequenceLength, 'uint8');
 [~, currentLabel] = fileparts(listing(1).folder);
 [~, currentPerson] = fileparts(fileparts(fileparts(listing(1).folder)));
 frameIdx = 0;
@@ -28,7 +28,7 @@ for imgIdx = 1:listingLength
     
     if strcmp(label, currentLabel) && strcmp(person, currentPerson)
         frameIdx = frameIdx + 1;
-        gesture(:,:,:,frameIdx) = common.readGestureFrame(listing(imgIdx).folder, listing(imgIdx).name);
+        gesture(:,:,:,frameIdx) = common.readGestureFrame(listing(imgIdx).folder, listing(imgIdx).name, trainOnDepthMaps);
     else
         if size(gesture, 4) > frameIdx
             gesture(:,:,:, frameIdx + 1:end) = [];
@@ -44,7 +44,7 @@ for imgIdx = 1:listingLength
         currentLabel = label;
         currentPerson = person;
         frameIdx = 1;
-        gesture(:,:,:,frameIdx) = common.readGestureFrame(listing(imgIdx).folder, listing(imgIdx).name);
+        gesture(:,:,:,frameIdx) = common.readGestureFrame(listing(imgIdx).folder, listing(imgIdx).name, trainOnDepthMaps);
     end
 end
 

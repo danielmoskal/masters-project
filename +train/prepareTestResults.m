@@ -8,6 +8,7 @@ function [results] = prepareTestResults(params, results, repeatResultsTab, index
     results(index).learnRateSchedule = constParams.learnRateSchedule;
     results(index).onlyCorrectValidationSequence = constParams.onlyCorrectValidationSequence;
     results(index).maxAllowedSequenceLength = constParams.maxAllowedSequenceLength;
+    results(index).trainOnDepthMaps = constParams.trainOnDepthMaps;
     results(index).numRepeats = constParams.numRepeats;
     
     results(index).trainPerson = variableParams(index).trainPersonShortString;

@@ -1,6 +1,8 @@
 function [classifyResult] = testClassifyIfRequired(params, labelsMap, net, classes, inputSize, testId, repeatId)
 
-    if ~params.const.performTestClassification || ~params.const.assembleNetworks
+    constParams = params.const;
+
+    if ~constParams.performTestClassification || ~constParams.assembleNetworks
         return; 
     end
     
@@ -10,9 +12,18 @@ function [classifyResult] = testClassifyIfRequired(params, labelsMap, net, class
 
     [listing] = common.prepareListing(fileNames.dataFileListing, labelsMap, variableParams(testId).losoPerson);
     
+    
+    fprintf("- Prepare loso valid gestures... (person-%s)\n", variableParams(testId).losoPersonShortString);
+    
     filePrefix = sprintf("person-%s_", variableParams(testId).losoPersonShortString);
+    if constParams.trainOnDepthMaps
+        filePrefix = sprintf("depth_%s", filePrefix);
+    end
     gestureMatFile = fullfile(fileNames.sequencesFolder, filePrefix + fileNames.crossValidationGesturesMatFileName);
-    [labels, gestures, gesturesListing] = common.prepareGestures(labelsMap, listing, inputSize, gestureMatFile);
+    [labels, gestures, gesturesListing] = common.prepareGestures(labelsMap, listing, inputSize, gestureMatFile, constParams.trainOnDepthMaps);
+    
+    fprintf("- Loso valid gestures prepared!\n");
+    
     
     numGestures = size(gestures, 1);
     numClasses = size(classes, 1);
@@ -49,7 +60,7 @@ function [classifyResult] = testClassifyIfRequired(params, labelsMap, net, class
     
     
     function [] = saveClassifyResultsIfRequired()
-        if ~params.const.saveClassifyResults
+        if ~constParams.saveClassifyResults
             return;
         end
         

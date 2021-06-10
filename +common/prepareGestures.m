@@ -1,4 +1,4 @@
-function [labels, gestures, gesturesListing] = prepareGestures(labelsMap, listing, inputSize, testGesturesFile)
+function [labels, gestures, gesturesListing] = prepareGestures(labelsMap, listing, inputSize, testGesturesFile, trainOnDepthMaps)
 
     if exist(testGesturesFile, 'file')
         load(testGesturesFile, "gestures", "labels", "gesturesListing")
@@ -29,7 +29,7 @@ function [labels, gestures, gesturesListing] = prepareGestures(labelsMap, listin
     
         if strcmp(label, currentLabel) && strcmp(person, currentPerson)
             frameIdx = frameIdx + 1;
-            gesture(:,:,:,frameIdx) = common.readGestureFrame(listing(imgIdx).folder, listing(imgIdx).name);
+            gesture(:,:,:,frameIdx) = common.readGestureFrame(listing(imgIdx).folder, listing(imgIdx).name, trainOnDepthMaps);
         else
             if size(gesture, 4) > frameIdx
                 gesture(:,:,:, frameIdx + 1:end) = [];
@@ -46,7 +46,7 @@ function [labels, gestures, gesturesListing] = prepareGestures(labelsMap, listin
             currentLabel = label;
             currentPerson = person;
             frameIdx = 1;
-            gesture(:,:,:,frameIdx) = common.readGestureFrame(listing(imgIdx).folder, listing(imgIdx).name);
+            gesture(:,:,:,frameIdx) = common.readGestureFrame(listing(imgIdx).folder, listing(imgIdx).name, trainOnDepthMaps);
         end
     end
 

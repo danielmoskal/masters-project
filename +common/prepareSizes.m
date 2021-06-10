@@ -4,7 +4,8 @@ function [listingLength, H, W, C, maxSequenceLength, sequencesLength] = prepareS
 
     firstFileName = fullfile(listing(1).folder, listing(1).name);
     firstImg = imread(firstFileName);
-    [H, W, C] = size(firstImg);
+    [H, W, ~] = size(firstImg);
+    C = 3; % always 3 channels
 
     [~, currentLabel] = fileparts(listing(1).folder);
     [~, currentPerson] = fileparts(fileparts(fileparts(listing(1).folder)));
